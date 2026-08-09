@@ -1,10 +1,43 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const departmentSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  description: String,
-  headId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  createdAt: { type: Date, default: Date.now },
-});
+const departmentSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Department name is required"],
+      trim: true,
+      minlength: [2, "Department name must be at least 2 characters"],
+      maxlength: [100, "Department name cannot exceed 100 characters"],
+    },
 
-module.exports = mongoose.model('Department', departmentSchema);
+    description: {
+      type: String,
+      trim: true,
+      maxlength: [500, "Description cannot exceed 500 characters"],
+      default: "",
+    },
+
+    headId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
+
+departmentSchema.index({ name: 1 }, { unique: true });
+
+module.exports = mongoose.model("Department", departmentSchema);

@@ -1,10 +1,38 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const departmentMemberSchema = new mongoose.Schema({
-  departmentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Department', required: true },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  role: { type: String, enum: ['hr', 'team_manager', 'employee'], default: 'employee' },
-  joinedAt: { type: Date, default: Date.now },
-});
+const departmentMemberSchema = new mongoose.Schema(
+  {
+    departmentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Department",
+      required: true,
+      index: true,
+    },
 
-module.exports = mongoose.model('DepartmentMember', departmentMemberSchema);
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
+
+    role: {
+      type: String,
+      enum: ["hr", "team_manager", "employee"],
+      default: "employee",
+    },
+
+    joinedAt: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
+
+// Same user cannot be added twice to same department
+departmentMemberSchema.index({ departmentId: 1, userId: 1 }, { unique: true });
+
+module.exports = mongoose.model("DepartmentMember", departmentMemberSchema);
