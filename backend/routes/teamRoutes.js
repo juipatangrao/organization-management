@@ -12,7 +12,7 @@ const {
 
 const validate = require("../middleware/validate");
 
-const { objectId, teamValidation } = require("../middleware/validators");
+const { objectId, teamValidation } = require("../middleware/validator");
 
 router.post("/", objectId("id"), teamValidation, validate, createTeam);
 
