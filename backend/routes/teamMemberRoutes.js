@@ -12,7 +12,7 @@ const validate = require("../middleware/validate");
 
 const {
   objectId,
-} = require("../middleware/validators");
+} = require("../middleware/validators")
 
 router.post(
   "/",

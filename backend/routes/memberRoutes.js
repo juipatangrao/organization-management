@@ -14,7 +14,7 @@ const validate = require("../middleware/validate");
 const {
   objectId,
   memberValidation,
-} = require("../middleware/validators");
+} = require("../middleware/validators")
 
 router.post(
   "/",
