@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router({ mergeParams: true }); // mergeParams lets us access :id from parent route
+const router = express.Router({ mergeParams: true });
 const {
   addMember,
   getMembers,

@@ -5,11 +5,18 @@ const connectDB = require("./config/db");
 dotenv.config();
 
 const app = express();
+
+app.use(express.json());
+
 const memberRoutes = require('./routes/memberRoutes');
 const departmentRoutes = require('./routes/departmentRoutes');
+const teamRoutes = require('./routes/teamRoutes');
+const teamMemberRoutes = require('./routes/teamMemberRoutes');
+
 app.use('/api/departments', departmentRoutes);
 app.use('/api/departments/:id/members', memberRoutes);
-app.use(express.json());
+app.use('/api/departments/:id/teams', teamRoutes);
+app.use('/api/departments/:id/teams/:teamId/members', teamMemberRoutes);
 
 // Connect MongoDB
 connectDB();

@@ -17,7 +17,7 @@ exports.addMember = async (req, res) => {
 // Get all members of a department
 exports.getMembers = async (req, res) => {
   try {
-    const members = await DepartmentMember.find({ departmentId: req.params.id }).populate('userId', 'name email');
+    const members = await DepartmentMember.find({ departmentId: req.params.id });
     res.json(members);
   } catch (err) {
     res.status(500).json({ message: err.message });
