@@ -1,37 +1,16 @@
 const mongoose = require("mongoose");
 
-const teamMemberSchema = new mongoose.Schema(
+const auditLogSchema = new mongoose.Schema(
   {
-    teamId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Team",
-      required: true,
-      index: true,
-    },
-
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-      index: true,
-    },
-
-    joinedAt: {
-      type: Date,
-      default: Date.now,
-    },
+    action: { type: String, required: true, trim: true },
+    performedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null, index: true },
+    targetUser: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
+    departmentId: { type: mongoose.Schema.Types.ObjectId, ref: "Department", default: null, index: true },
+    teamId: { type: mongoose.Schema.Types.ObjectId, ref: "Team", default: null, index: true },
+    details: { type: String, trim: true, maxlength: 1000, default: "" },
+    createdAt: { type: Date, default: Date.now, index: true },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-teamMemberSchema.index(
-  { teamId: 1, userId: 1 },
-  { unique: true }
-);
-
-module.exports = mongoose.model(
-  "TeamMember",
-  teamMemberSchema
-);
+module.exports = mongoose.model("AuditLog", auditLogSchema);
