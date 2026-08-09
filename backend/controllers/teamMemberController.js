@@ -65,6 +65,7 @@ exports.addTeamMember = async (req, res) => {
       targetUser: userId,
       departmentId: team.departmentId,
       teamId,
+      performedBy: req.user.userId,
       details: `User ${userId} added to team`,
     });
 
@@ -159,6 +160,7 @@ exports.removeTeamMember = async (req, res) => {
       action: "TEAM_MEMBER_REMOVED",
       targetUser: userId,
       departmentId: team.departmentId,
+      performedBy: req.user.userId,
       teamId,
       details: `User ${userId} removed from team`,
     });

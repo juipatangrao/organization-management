@@ -36,6 +36,7 @@ exports.createDepartment = async (req, res) => {
 
     await createAuditLog({
       action: "DEPARTMENT_CREATED",
+      performedBy: req.user.userId,
       departmentId: department._id,
       details: `Department "${department.name}" created`,
     });
@@ -84,8 +85,10 @@ exports.getDepartmentById = async (req, res) => {
       });
     }
 
-    const department = await Department.findById(id)
-      .populate("headId", "name email");
+    const department = await Department.findById(id).populate(
+      "headId",
+      "name email",
+    );
 
     if (!department) {
       return res.status(404).json({
@@ -170,6 +173,7 @@ exports.updateDepartment = async (req, res) => {
 
     await createAuditLog({
       action: "DEPARTMENT_UPDATED",
+      performedBy: req.user.userId,
       departmentId: department._id,
       details: `Department "${department.name}" updated`,
     });
@@ -234,6 +238,7 @@ exports.deleteDepartment = async (req, res) => {
 
     await createAuditLog({
       action: "DEPARTMENT_DELETED",
+      performedBy: req.user.userId,
       departmentId: id,
       details: `Department "${department.name}" deleted`,
     });

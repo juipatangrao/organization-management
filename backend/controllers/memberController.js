@@ -48,12 +48,13 @@ exports.addMember = async (req, res) => {
       role: role || "employee",
     });
 
-    await createAuditLog({
-      action: "MEMBER_ADDED",
-      targetUser: userId,
-      departmentId,
-      details: `User ${userId} added to department`,
-    });
+await createAuditLog({
+  action: "MEMBER_ADDED",
+  performedBy: req.user.userId,
+  targetUser: userId,
+  departmentId,
+  details: `User ${userId} added to department`,
+});
 
     res.status(201).json({
       message: "Member added successfully",
@@ -155,6 +156,7 @@ exports.updateMember = async (req, res) => {
 
     await createAuditLog({
       action: "MEMBER_ROLE_CHANGED",
+      performedBy: req.user.userId,
       targetUser: userId,
       departmentId,
       details: `Role changed from ${oldRole} to ${role}`,
@@ -203,6 +205,7 @@ exports.removeMember = async (req, res) => {
 
     await createAuditLog({
       action: "MEMBER_REMOVED",
+      performedBy: req.user.userId,
       targetUser: userId,
       departmentId,
       details: `User ${userId} removed from department`,

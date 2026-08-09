@@ -54,6 +54,7 @@ exports.createTeam = async (req, res) => {
       action: "TEAM_CREATED",
       departmentId,
       teamId: team._id,
+      performedBy: req.user.userId,
       details: `Team "${team.name}" created`,
     });
 
@@ -195,6 +196,7 @@ exports.updateTeam = async (req, res) => {
     await createAuditLog({
       action: "TEAM_UPDATED",
       departmentId: team.departmentId,
+      performedBy: req.user.userId,
       teamId: team._id,
       details: `Team "${team.name}" updated`,
     });
@@ -240,6 +242,7 @@ exports.deleteTeam = async (req, res) => {
     await createAuditLog({
       action: "TEAM_DELETED",
       departmentId: team.departmentId,
+      performedBy: req.user.userId,
       teamId,
       details: `Team "${team.name}" deleted`,
     });
