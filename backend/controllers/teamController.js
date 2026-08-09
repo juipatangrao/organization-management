@@ -1,4 +1,5 @@
 const Team = require('../models/Team');
+const TeamMember = require('../models/TeamMember');
 
 // Create a team inside a department
 exports.createTeam = async (req, res) => {
@@ -51,7 +52,11 @@ exports.deleteTeam = async (req, res) => {
   try {
     const team = await Team.findByIdAndDelete(req.params.teamId);
     if (!team) return res.status(404).json({ message: 'Not found' });
-    res.json({ message: 'Team deleted' });
+
+    // delete all members of this team
+    await TeamMember.deleteMany({ teamId: req.params.teamId });
+
+    res.json({ message: 'Team and its members deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

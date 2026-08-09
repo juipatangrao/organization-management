@@ -1,4 +1,7 @@
 const Department = require('../models/Department');
+const DepartmentMember = require('../models/DepartmentMember');
+const Team = require('../models/Team');
+const TeamMember = require('../models/TeamMember');
 
 // Create
 exports.createDepartment = async (req, res) => {
@@ -43,11 +46,26 @@ exports.updateDepartment = async (req, res) => {
 };
 
 // Delete
+// Delete
 exports.deleteDepartment = async (req, res) => {
   try {
     const department = await Department.findByIdAndDelete(req.params.id);
     if (!department) return res.status(404).json({ message: 'Not found' });
-    res.json({ message: 'Deleted successfully' });
+
+    // find all teams in this department
+    const teams = await Team.find({ departmentId: req.params.id });
+    const teamIds = teams.map(team => team._id);
+
+    // delete team members belonging to those teams
+    await TeamMember.deleteMany({ teamId: { $in: teamIds } });
+
+    // delete the teams themselves
+    await Team.deleteMany({ departmentId: req.params.id });
+
+    // delete department members
+    await DepartmentMember.deleteMany({ departmentId: req.params.id });
+
+    res.json({ message: 'Department and all related data deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
