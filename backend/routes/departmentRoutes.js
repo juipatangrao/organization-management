@@ -10,24 +10,31 @@ const {
   deleteDepartment,
 } = require("../controllers/departmentController");
 
-const validate = require("../middleware/validate");
-
+const validate = require("../middleware/validate");   
+const { sensitiveLimiter } = require("../middleware/rateLimiter");
 const {
   objectId,
   departmentValidation,
 } = require("../middleware/validators");
 
+// 👇 NAYE IMPORTS - tumhare middleware
+const authenticate = require("../middleware/authenticate");
+const checkRole = require("../middleware/checkRole");
+
 router.post(
   "/",
+  authenticate,
+  checkRole("hr"),
   departmentValidation,
   validate,
   createDepartment
 );
 
-router.get("/", getDepartments);
+router.get("/", authenticate, getDepartments);
 
 router.get(
   "/:id",
+  authenticate,
   objectId("id"),
   validate,
   getDepartmentById
@@ -35,6 +42,8 @@ router.get(
 
 router.put(
   "/:id",
+  authenticate,
+  checkRole("hr"),
   objectId("id"),
   validate,
   updateDepartment
@@ -42,6 +51,9 @@ router.put(
 
 router.delete(
   "/:id",
+  authenticate,
+  checkRole("hr"),
+  sensitiveLimiter, 
   objectId("id"),
   validate,
   deleteDepartment
