@@ -58,7 +58,6 @@ exports.createDepartment = async (req, res) => {
 exports.getDepartments = async (req, res) => {
   try {
     const departments = await Department.find()
-      .populate("headId", "name email")
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -74,6 +73,8 @@ exports.getDepartments = async (req, res) => {
   }
 };
 
+
+
 // GET DEPARTMENT BY ID
 exports.getDepartmentById = async (req, res) => {
   try {
@@ -85,10 +86,7 @@ exports.getDepartmentById = async (req, res) => {
       });
     }
 
-    const department = await Department.findById(id).populate(
-      "headId",
-      "name email",
-    );
+const department = await Department.findById(id);
 
     if (!department) {
       return res.status(404).json({

@@ -26,6 +26,11 @@ const departmentMemberSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    status: {
+      type: String,
+      enum: ["Active", "Inactive", "On Leave"],
+      default: "Active",
+    },
   },
   {
     timestamps: true,

@@ -32,6 +32,29 @@ const departmentSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    code: {
+      type: String,
+      trim: true,
+      uppercase: true,
+      maxlength: [10, "Code cannot exceed 10 characters"],
+    },
+
+    managerTitle: {
+      type: String,
+      trim: true,
+      default: "Department Head",
+    },
+
+    budget: {
+      type: Number,
+      default: 0,
+    },
+    
+    themeColor: {
+      type: String,
+      trim: true,
+      default: "indigo", // e.g. "indigo", "purple", "green" — frontend maps this to accent colors
+    },
   },
   {
     timestamps: true,
