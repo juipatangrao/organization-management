@@ -1,11 +1,30 @@
 const mongoose = require("mongoose");
 const Page = require("../models/Page");
 
+const ALLOWED_BLOCK_TYPES = ["heading", "text", "bullet", "checklist", "code", "quote"];
+
+function validateBlocks(blocks) {
+  if (blocks === undefined) return null; // not provided, skip
+  if (!Array.isArray(blocks)) return "blocks must be an array";
+
+  for (const block of blocks) {
+    if (!block.type || !ALLOWED_BLOCK_TYPES.includes(block.type)) {
+      return `Invalid block type: ${block.type}`;
+    }
+  }
+  return null;
+}
+
 // CREATE PAGE
 exports.createPage = async (req, res) => {
   try {
-    const { title, content, icon, parentId } = req.body;
+    const { title, blocks, icon, parentId } = req.body;
     const ownerId = req.user.userId;
+
+    const blockError = validateBlocks(blocks);
+    if (blockError) {
+      return res.status(400).json({ message: blockError });
+    }
 
     if (parentId) {
       if (!mongoose.Types.ObjectId.isValid(parentId)) {
@@ -26,7 +45,7 @@ exports.createPage = async (req, res) => {
     const page = await Page.create({
       ownerId,
       title: title?.trim() || "Untitled",
-      content: content || "",
+      blocks: blocks || [],
       icon: icon || "📄",
       parentId: parentId || null,
     });
@@ -41,16 +60,16 @@ exports.createPage = async (req, res) => {
   }
 };
 
-// GET ALL PAGES (flat list for the logged-in user, excludes archived by default)
+// GET ALL PAGES (flat list, excludes archived by default; ?favorite=true filters favorites)
 exports.getPages = async (req, res) => {
   try {
     const ownerId = req.user.userId;
     const includeArchived = req.query.includeArchived === "true";
+    const onlyFavorites = req.query.favorite === "true";
 
     const filter = { ownerId };
-    if (!includeArchived) {
-      filter.isArchived = false;
-    }
+    if (!includeArchived) filter.isArchived = false;
+    if (onlyFavorites) filter.isFavorite = true;
 
     const pages = await Page.find(filter).sort({ parentId: 1, position: 1, createdAt: 1 });
 
@@ -64,7 +83,36 @@ exports.getPages = async (req, res) => {
   }
 };
 
-// GET ONE PAGE (with its direct children listed for navigation)
+// SEARCH PAGES (title + block text), scoped to the logged-in user only
+exports.searchPages = async (req, res) => {
+  try {
+    const ownerId = req.user.userId;
+    const { q } = req.query;
+
+    if (!q || !q.trim()) {
+      return res.status(400).json({ message: "Search query 'q' is required" });
+    }
+
+    const pages = await Page.find(
+      {
+        ownerId,
+        isArchived: false,
+        $text: { $search: q.trim() },
+      },
+      { score: { $meta: "textScore" } }
+    ).sort({ score: { $meta: "textScore" } });
+
+    res.status(200).json({
+      count: pages.length,
+      pages,
+    });
+  } catch (error) {
+    console.error("Search pages:", error);
+    res.status(500).json({ message: "Failed to search pages" });
+  }
+};
+
+// GET ONE PAGE (with its direct children)
 exports.getPageById = async (req, res) => {
   try {
     const page = req.page; // set by checkPageOwner middleware
@@ -84,18 +132,22 @@ exports.getPageById = async (req, res) => {
   }
 };
 
-// UPDATE PAGE (title, content, icon, or move to a different parent)
+// UPDATE PAGE (title, blocks, icon, move to different parent, reorder)
 exports.updatePage = async (req, res) => {
   try {
     const page = req.page; // set by checkPageOwner middleware
-    const { title, content, icon, parentId, position } = req.body;
+    const { title, blocks, icon, parentId, position } = req.body;
 
     if (title !== undefined) {
       page.title = title.trim() || "Untitled";
     }
 
-    if (content !== undefined) {
-      page.content = content;
+    if (blocks !== undefined) {
+      const blockError = validateBlocks(blocks);
+      if (blockError) {
+        return res.status(400).json({ message: blockError });
+      }
+      page.blocks = blocks;
     }
 
     if (icon !== undefined) {
@@ -144,6 +196,23 @@ exports.updatePage = async (req, res) => {
   }
 };
 
+// TOGGLE FAVORITE
+exports.toggleFavorite = async (req, res) => {
+  try {
+    const page = req.page;
+    page.isFavorite = !page.isFavorite;
+    await page.save();
+
+    res.status(200).json({
+      message: page.isFavorite ? "Page added to favorites" : "Page removed from favorites",
+      page,
+    });
+  } catch (error) {
+    console.error("Toggle favorite:", error);
+    res.status(500).json({ message: "Failed to update favorite status" });
+  }
+};
+
 // ARCHIVE / RESTORE PAGE (soft delete)
 exports.archivePage = async (req, res) => {
   try {
@@ -182,8 +251,6 @@ exports.deletePage = async (req, res) => {
   try {
     const page = req.page;
 
-    // Recursively collect all descendant page IDs so nested sub-pages
-    // don't get orphaned when a parent page is deleted.
     const collectDescendantIds = async (parentId) => {
       const children = await Page.find({ parentId }).select("_id");
       let ids = children.map((c) => c._id);

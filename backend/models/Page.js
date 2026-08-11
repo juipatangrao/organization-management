@@ -1,5 +1,31 @@
 const mongoose = require("mongoose");
 
+// A single content block, Notion-style. `type` decides how the frontend renders it.
+const blockSchema = new mongoose.Schema(
+  {
+    type: {
+      type: String,
+      enum: ["heading", "text", "bullet", "checklist", "code", "quote"],
+      required: true,
+    },
+    text: {
+      type: String,
+      default: "",
+    },
+    checked: {
+      // only used when type === "checklist"
+      type: Boolean,
+      default: false,
+    },
+    language: {
+      // only used when type === "code", e.g. "javascript", "python"
+      type: String,
+      default: "plaintext",
+    },
+  },
+  { _id: true } // each block gets its own _id so frontend can target it for edits/reorder
+);
+
 const pageSchema = new mongoose.Schema(
   {
     ownerId: {
@@ -16,10 +42,10 @@ const pageSchema = new mongoose.Schema(
       maxlength: [200, "Title cannot exceed 200 characters"],
     },
 
-    // Simple rich text / block content stored as a string (markdown or JSON string).
-    content: {
-      type: String,
-      default: "",
+    // Rich content as an ordered array of blocks (heading/bullet/checklist/code/quote/text)
+    blocks: {
+      type: [blockSchema],
+      default: [],
     },
 
     icon: {
@@ -27,7 +53,6 @@ const pageSchema = new mongoose.Schema(
       default: "📄",
     },
 
-    // Self-reference for nested pages (sub-pages). null = top-level page.
     parentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Page",
@@ -41,7 +66,12 @@ const pageSchema = new mongoose.Schema(
       index: true,
     },
 
-    // Order among siblings, for manual drag-and-drop ordering in the sidebar
+    isFavorite: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+
     position: {
       type: Number,
       default: 0,
@@ -53,5 +83,8 @@ const pageSchema = new mongoose.Schema(
 );
 
 pageSchema.index({ ownerId: 1, parentId: 1 });
+
+// Text index for search across title and block text
+pageSchema.index({ title: "text", "blocks.text": "text" });
 
 module.exports = mongoose.model("Page", pageSchema);
