@@ -22,6 +22,7 @@ const departmentRoutes = require("./routes/departmentRoutes");
 const memberRoutes = require("./routes/memberRoutes");
 const teamRoutes = require("./routes/teamRoutes");
 const teamMemberRoutes = require("./routes/teamMemberRoutes");
+const pageRoutes = require("./routes/pageRoutes");
 
 app.use("/api/departments", departmentRoutes);
 
@@ -39,6 +40,8 @@ app.use(
   "/api/departments/:id/teams/:teamId/members",
   teamMemberRoutes
 );
+
+app.use("/api/pages", pageRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {
