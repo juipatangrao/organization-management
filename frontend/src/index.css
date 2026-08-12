@@ -1,34 +1,17 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 html,
 body,
 #root {
   width: 100%;
   min-height: 100%;
-  font-family: Inter, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  background: #f5f7fb;
-  color: #1f2937;
+  margin: 0;
+  background: #faf9f7;
 }
 
-button,
-input,
-textarea,
-select {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
+* {
+  box-sizing: border-box;
 }
