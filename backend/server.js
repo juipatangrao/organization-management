@@ -8,10 +8,7 @@ dotenv.config();
 
 const app = express();
 
-
-app.use(express.json());   // ✅ ab upar hai, routes se pehle
-
-
+app.use(express.json()); // ✅ ab upar hai, routes se pehle
 
 // Middleware
 app.use(cors());
@@ -23,23 +20,19 @@ const memberRoutes = require("./routes/memberRoutes");
 const teamRoutes = require("./routes/teamRoutes");
 const teamMemberRoutes = require("./routes/teamMemberRoutes");
 const pageRoutes = require("./routes/pageRoutes");
+const organizationRoutes = require("./routes/organizationRoutes");
+const auditLogRoutes = require("./routes/auditLogRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 
 app.use("/api/departments", departmentRoutes);
 
-app.use(
-  "/api/departments/:id/members",
-  memberRoutes
-);
+app.use("/api/departments/:id/members", memberRoutes);
 
-app.use(
-  "/api/departments/:id/teams",
-  teamRoutes
-);
-
-app.use(
-  "/api/departments/:id/teams/:teamId/members",
-  teamMemberRoutes
-);
+app.use("/api/departments/:id/teams", teamRoutes);
+app.use("/api/organization", organizationRoutes);
+app.use("/api/audit-logs", auditLogRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/departments/:id/teams/:teamId/members", teamMemberRoutes);
 
 app.use("/api/pages", pageRoutes);
 

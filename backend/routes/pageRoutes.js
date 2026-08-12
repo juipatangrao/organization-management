@@ -19,7 +19,7 @@ const checkPageOwner = require("../middleware/checkPageOwner");
 const { sensitiveLimiter } = require("../middleware/rateLimiter");
 
 // NOTE: /search must be declared BEFORE /:pageId, otherwise Express will
-// treat "search" as a pageId value and checkPageOwner will fail on it.
+// treat "search" as a pageId value and checkP77\\\ageOwner will fail on it.
 router.get("/search", authenticate, searchPages);
 
 router.post("/", authenticate, createPage);

@@ -20,6 +20,8 @@ const {
 // 👇 NAYE IMPORTS - tumhare middleware
 const authenticate = require("../middleware/authenticate");
 const checkRole = require("../middleware/checkRole");
+const checkDepartmentAccess = require("../middleware/checkDepartmentAccess");
+const { getDepartmentAuditLogs } = require("../controllers/auditLogController");
 
 router.post(
   "/",
@@ -39,7 +41,14 @@ router.get(
   validate,
   getDepartmentById
 );
-
+router.get(
+  "/:id/audit-logs",
+  authenticate,
+  objectId("id"),
+  checkDepartmentAccess,
+  validate,
+  getDepartmentAuditLogs
+);
 router.put(
   "/:id",
   authenticate,
