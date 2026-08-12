@@ -1,158 +1,46 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-import PersonalSpace from "./pages/PersonalSpace";
-import OrganizationOverview from "./pages/OrganizationOverview";
-import Members from "./pages/Members";
-import HRDashboard from "./pages/HRDashboard";
-import EmployeeDashboard from "./pages/EmployeeDashboard";
-import Teams from "./pages/Teams";
-import Groups from "./pages/Groups";
-import OrganizationSettings from "./pages/OrganizationSettings";
+import Layout from "./components/Layout";
+import Dashboard from "./pages/Dashboard";
+import Departments from "./pages/Departments";
+import DepartmentDetail from "./pages/DepartmentDetail";
+import Placeholder from "./pages/Placeholder";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-        {/* =================================
-            DEFAULT PAGE
-        ================================== */}
+          <Route path="/dashboard" element={<Dashboard />} />
 
-        <Route
-          path="/"
-          element={
-            <Navigate
-              to="/personal"
-              replace
-            />
-          }
-        />
+          <Route path="/organization/departments" element={<Departments />} />
+          <Route path="/organization/departments/:id" element={<DepartmentDetail />} />
 
+          <Route
+            path="/employees"
+            element={<Placeholder title="Employees" icon="👥" />}
+          />
+          <Route path="/tasks" element={<Placeholder title="Tasks" icon="✅" />} />
+          <Route path="/projects" element={<Placeholder title="Projects" icon="📁" />} />
+          <Route
+            path="/productivity"
+            element={<Placeholder title="Productivity" icon="📈" />}
+          />
+          <Route
+            path="/ai-manager"
+            element={<Placeholder title="AI Manager" icon="🤖" description="Pro feature — coming soon." />}
+          />
+          <Route
+            path="/collaboration"
+            element={<Placeholder title="Collaboration" icon="💬" />}
+          />
+          <Route path="/calendar" element={<Placeholder title="Calendar" icon="📅" />} />
+          <Route path="/documents" element={<Placeholder title="Documents" icon="📄" />} />
 
-        {/* =================================
-            PERSONAL SPACE
-        ================================== */}
-
-        <Route
-          path="/personal"
-          element={<PersonalSpace />}
-        />
-
-
-        {/* =================================
-            ORGANIZATION OVERVIEW
-        ================================== */}
-
-        <Route
-          path="/organization"
-          element={
-            <OrganizationOverview />
-          }
-        />
-
-
-        {/* =================================
-            MEMBERS
-        ================================== */}
-
-        <Route
-          path="/organization/members"
-          element={<Members />}
-        />
-
-
-        {/* =================================
-            HR DASHBOARD
-        ================================== */}
-
-        <Route
-          path="/organization/hr"
-          element={
-            <HRDashboard />
-          }
-        />
-
-
-        {/* =================================
-            EMPLOYEE DASHBOARD
-        ================================== */}
-
-        <Route
-          path="/organization/employee"
-          element={
-            <EmployeeDashboard />
-          }
-        />
-
-
-        {/* =================================
-            TEAMS
-        ================================== */}
-
-        <Route
-          path="/organization/teams"
-          element={<Teams />}
-        />
-
-
-        {/* =================================
-            GROUPS
-        ================================== */}
-
-        <Route
-          path="/organization/groups"
-          element={<Groups />}
-        />
-
-
-        {/* =================================
-            ORGANIZATION SETTINGS
-        ================================== */}
-
-        <Route
-          path="/organization/settings"
-          element={
-            <OrganizationSettings />
-          }
-        />
-
-
-        {/* =================================
-            FUTURE PAGES
-        ================================== */}
-
-        <Route
-          path="/organization/roles"
-          element={
-            <div style={{ padding: "40px" }}>
-              <h2>Roles & Permissions</h2>
-              <p>
-                This page will be created next.
-              </p>
-            </div>
-          }
-        />
-
-
-        {/* =================================
-            UNKNOWN ROUTE
-        ================================== */}
-
-        <Route
-          path="*"
-          element={
-            <Navigate
-              to="/personal"
-              replace
-            />
-          }
-        />
-
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
