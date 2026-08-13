@@ -1,5 +1,4 @@
 const express = require("express");
-
 const router = express.Router({ mergeParams: true });
 
 const {
@@ -13,13 +12,16 @@ const {
 const validate = require("../middleware/validate");
 const { sensitiveLimiter } = require("../middleware/rateLimiter");
 
-const { objectId, teamValidation } = require("../middleware/validators");
+const {
+  objectId,
+  teamValidation,
+} = require("../middleware/validators");
 
-// 👇 NAYE IMPORTS
 const authenticate = require("../middleware/authenticate");
 const checkRole = require("../middleware/checkRole");
 const checkDepartmentAccess = require("../middleware/checkDepartmentAccess");
 
+// CREATE TEAM
 router.post(
   "/",
   authenticate,
@@ -31,6 +33,7 @@ router.post(
   createTeam
 );
 
+// GET ALL TEAMS
 router.get(
   "/",
   authenticate,
@@ -40,6 +43,7 @@ router.get(
   getTeams
 );
 
+// GET TEAM BY ID
 router.get(
   "/:teamId",
   authenticate,
@@ -47,9 +51,10 @@ router.get(
   objectId("teamId"),
   checkDepartmentAccess,
   validate,
-  getTeamById,
+  getTeamById
 );
 
+// UPDATE TEAM
 router.put(
   "/:teamId",
   authenticate,
@@ -58,9 +63,10 @@ router.put(
   checkDepartmentAccess,
   checkRole("hr"),
   validate,
-  updateTeam,
+  updateTeam
 );
 
+// DELETE TEAM
 router.delete(
   "/:teamId",
   authenticate,
@@ -68,9 +74,9 @@ router.delete(
   objectId("teamId"),
   checkDepartmentAccess,
   checkRole("hr"),
-  sensitiveLimiter,  
+  sensitiveLimiter,
   validate,
-  deleteTeam,
+  deleteTeam
 );
 
 module.exports = router;

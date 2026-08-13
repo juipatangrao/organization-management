@@ -762,3 +762,672 @@
     flex-direction: column;
   }
 }
+/* =========================================================
+   AUDIT & ACTIVITY TIMELINE
+   NEXUS AI — DARK BROWN PREMIUM THEME
+   ========================================================= */
+
+.audit-log-page {
+  width: 100%;
+  padding: 26px 0 40px;
+  background: transparent;
+}
+
+/* MAIN AUDIT CONTAINER */
+
+.audit-log-card {
+  width: 100%;
+  box-sizing: border-box;
+
+  background: #241710;
+
+  border: 1px solid #4b3324;
+  border-radius: 18px;
+
+  padding: 28px 28px 30px;
+
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.audit-log-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding-bottom: 20px;
+
+  border-bottom: 1px solid #3c291d;
+}
+
+.audit-log-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.audit-log-title-row svg {
+  color: #c47a3c;
+  stroke-width: 2.2;
+}
+
+.audit-log-title-row h2 {
+  margin: 0;
+
+  color: #f5e9df;
+
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.audit-log-header p {
+  margin: 6px 0 0 28px;
+
+  color: #a88e7c;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.audit-event-count {
+  flex-shrink: 0;
+
+  padding: 8px 14px;
+
+  border-radius: 8px;
+
+  background: #382419;
+  border: 1px solid #513625;
+
+  color: #cda47f;
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+/* =========================================================
+   TIMELINE
+   ========================================================= */
+
+.audit-timeline {
+  position: relative;
+
+  margin-top: 24px;
+  padding-left: 26px;
+}
+
+.audit-timeline::before {
+  content: "";
+
+  position: absolute;
+
+  top: 14px;
+  bottom: 14px;
+  left: 9px;
+
+  width: 1px;
+
+  background: #5a3b28;
+}
+
+.audit-timeline-item {
+  position: relative;
+
+  padding-left: 28px;
+
+  margin-bottom: 26px;
+}
+
+.audit-timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+/* =========================================================
+   TIMELINE DOT
+   ========================================================= */
+
+.audit-timeline-dot {
+  position: absolute;
+
+  left: -1px;
+  top: 12px;
+
+  width: 15px;
+  height: 15px;
+
+  border-radius: 50%;
+
+  background: #b9682c;
+
+  border: 3px solid #241710;
+
+  box-shadow:
+    0 0 0 1px #7d4b2b,
+    0 0 10px rgba(185, 104, 44, 0.22);
+
+  z-index: 2;
+}
+
+/* =========================================================
+   EVENT CARD
+   ========================================================= */
+
+.audit-event-card {
+  background: #2b1c13;
+
+  border: 1px solid #493124;
+
+  border-radius: 14px;
+
+  padding: 18px 18px 15px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.audit-event-card:hover {
+  border-color: #765036;
+
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02);
+
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   EVENT HEADER
+   ========================================================= */
+
+.audit-event-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.audit-event-heading {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  min-width: 0;
+}
+
+.audit-event-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  white-space: nowrap;
+
+  padding: 5px 9px;
+
+  border-radius: 5px;
+
+  background: #4a2d1b;
+
+  border: 1px solid #684127;
+
+  color: #d99559;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.45px;
+}
+
+.audit-event-heading h3 {
+  margin: 0;
+
+  color: #f3e6db;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  line-height: 1.4;
+}
+
+.audit-event-date {
+  flex-shrink: 0;
+
+  color: #a68b77;
+
+  font-size: 10px;
+
+  white-space: nowrap;
+
+  padding-top: 2px;
+}
+
+/* =========================================================
+   DESCRIPTION
+   ========================================================= */
+
+.audit-event-description {
+  margin: 14px 0;
+
+  color: #d0bca9;
+
+  font-size: 12px;
+
+  line-height: 1.6;
+}
+
+.audit-event-divider {
+  height: 1px;
+
+  background: #443025;
+}
+
+/* =========================================================
+   PERFORMER
+   ========================================================= */
+
+.audit-performer {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  padding-top: 12px;
+
+  min-height: 24px;
+}
+
+.audit-avatar {
+  width: 23px;
+  height: 23px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #9c5927;
+
+  border: 1px solid #c27a42;
+
+  color: #fff7f0;
+
+  font-size: 8px;
+  font-weight: 800;
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.audit-performed-by {
+  color: #8f7766;
+
+  font-size: 10px;
+}
+
+.audit-performer strong {
+  color: #dfc5b0;
+
+  font-size: 10px;
+}
+
+.audit-performer-role {
+  color: #8f7766;
+
+  font-size: 10px;
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.audit-loading {
+  padding: 45px 0;
+
+  text-align: center;
+
+  color: #a58a77;
+
+  font-size: 12px;
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.audit-empty {
+  min-height: 220px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  color: #927866;
+
+  text-align: center;
+}
+
+.audit-empty svg {
+  color: #b9682c;
+
+  margin-bottom: 5px;
+}
+
+.audit-empty strong {
+  color: #e3d0c0;
+
+  font-size: 13px;
+}
+
+.audit-empty span {
+  color: #927866;
+
+  font-size: 11px;
+}
+
+/* =========================================================
+   SCROLLBAR — BROWN
+   ========================================================= */
+
+.audit-log-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.audit-log-card::-webkit-scrollbar-track {
+  background: #21150f;
+}
+
+.audit-log-card::-webkit-scrollbar-thumb {
+  background: #62432e;
+  border-radius: 10px;
+}
+
+.audit-log-card::-webkit-scrollbar-thumb:hover {
+  background: #8a5b38;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+  .audit-log-card {
+    padding: 20px 16px;
+  }
+
+  .audit-event-top {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .audit-event-date {
+    order: -1;
+  }
+
+  .audit-event-heading {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 7px;
+  }
+
+  .audit-performer {
+    flex-wrap: wrap;
+  }
+}
+/* =========================================================
+   MEMBERS TAB
+   NEXUS AI — PREMIUM BROWN THEME
+   ========================================================= */
+
+.dept-detail-page .dept-tab-placeholder {
+  background: #ffffff;
+  border: 1px solid #e3d8cf;
+  border-radius: 14px;
+  padding: 28px 30px;
+  color: #3b2a20;
+  box-shadow: 0 3px 14px rgba(73, 48, 32, 0.04);
+}
+
+/* ---------------------------------------------------------
+   ADD MEMBER AREA
+   --------------------------------------------------------- */
+
+.dept-detail-page .dept-tab-placeholder input {
+  height: 38px;
+  min-width: 300px;
+
+  padding: 0 12px;
+
+  border: 1px solid #d8c9bd;
+  border-radius: 8px;
+
+  background: #fffdfb;
+  color: #3d2c22;
+
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  font-size: 11px;
+
+  outline: none;
+
+  box-sizing: border-box;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.dept-detail-page .dept-tab-placeholder input::placeholder {
+  color: #a49387;
+}
+
+.dept-detail-page .dept-tab-placeholder input:focus {
+  border-color: #8a5a38;
+  background: #ffffff;
+
+  box-shadow: 0 0 0 3px rgba(138, 90, 56, 0.10);
+}
+
+/* ADD MEMBER BUTTON */
+
+.dept-detail-page .dept-tab-placeholder button {
+  height: 38px;
+
+  padding: 0 16px;
+
+  margin-left: 7px;
+
+  border: 1px solid #6b4226;
+  border-radius: 8px;
+
+  background: #6b4226;
+  color: #ffffff;
+
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+}
+
+.dept-detail-page .dept-tab-placeholder button:hover {
+  background: #54331f;
+
+  box-shadow: 0 5px 12px rgba(107, 66, 38, 0.18);
+
+  transform: translateY(-1px);
+}
+
+.dept-detail-page .dept-tab-placeholder button:active {
+  transform: translateY(0);
+}
+
+/* ---------------------------------------------------------
+   MEMBER ROWS
+   --------------------------------------------------------- */
+
+/*
+   The members are currently rendered without dedicated
+   member CSS classes, so style the rows inside the
+   placeholder container.
+*/
+
+.dept-detail-page .dept-tab-placeholder > div {
+  color: #4b372a;
+}
+
+/* Member information text */
+
+.dept-detail-page .dept-tab-placeholder > div strong,
+.dept-detail-page .dept-tab-placeholder > div b {
+  color: #4a3323;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Secondary member information */
+
+.dept-detail-page .dept-tab-placeholder > div small {
+  color: #9a887b;
+  font-size: 10px;
+}
+
+/* ---------------------------------------------------------
+   REMOVE MEMBER BUTTON
+   --------------------------------------------------------- */
+
+.dept-detail-page .dept-tab-placeholder button:last-child {
+  background: #fff8f7;
+  border-color: #efc9c3;
+  color: #b34a40;
+}
+
+.dept-detail-page .dept-tab-placeholder button:last-child:hover {
+  background: #fdf0ee;
+  border-color: #e4aaa3;
+  color: #963d35;
+
+  box-shadow: none;
+}
+
+/* ---------------------------------------------------------
+   MEMBER SEPARATOR
+   --------------------------------------------------------- */
+
+.dept-detail-page .dept-tab-placeholder hr {
+  border: 0;
+  border-top: 1px solid #eee6df;
+  margin: 14px 0;
+}
+
+/* ---------------------------------------------------------
+   MEMBER ROW HOVER
+   --------------------------------------------------------- */
+
+.dept-detail-page .dept-tab-placeholder > div:hover {
+  background: #fcfaf8;
+}
+
+/* ---------------------------------------------------------
+   MEMBER AVATAR
+   --------------------------------------------------------- */
+
+.dept-detail-page .member-avatar {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #6b4226;
+  color: #ffffff;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  flex-shrink: 0;
+}
+
+/* ---------------------------------------------------------
+   ACTIVE STATUS
+   --------------------------------------------------------- */
+
+.dept-detail-page .member-status {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 4px 8px;
+
+  border-radius: 20px;
+
+  background: #f2f7f2;
+  border: 1px solid #cbdccc;
+
+  color: #58755d;
+
+  font-size: 9px;
+  font-weight: 700;
+}
+
+/* ---------------------------------------------------------
+   MEMBER NAME / ID
+   --------------------------------------------------------- */
+
+.dept-detail-page .member-name {
+  color: #3b2a20;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.dept-detail-page .member-id {
+  color: #9b897c;
+  font-size: 10px;
+  margin-top: 3px;
+}
+
+/* ---------------------------------------------------------
+   RESPONSIVE
+   --------------------------------------------------------- */
+
+@media (max-width: 700px) {
+
+  .dept-detail-page .dept-tab-placeholder {
+    padding: 20px;
+  }
+
+  .dept-detail-page .dept-tab-placeholder input {
+    min-width: 0;
+    width: 100%;
+    margin-bottom: 8px;
+  }
+
+  .dept-detail-page .dept-tab-placeholder button {
+    margin-left: 0;
+  }
+}

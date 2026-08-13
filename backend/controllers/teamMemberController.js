@@ -1,89 +1,219 @@
 const mongoose = require("mongoose");
 
+const Department = require("../models/Department");
 const Team = require("../models/Team");
-const DepartmentMember = require("../models/DepartmentMember");
 const TeamMember = require("../models/TeamMember");
 
 const { createAuditLog } = require("../services/auditService");
 
-// ADD TEAM MEMBER
-exports.addTeamMember = async (req, res) => {
+// CREATE TEAM
+exports.createTeam = async (req, res) => {
   try {
-    const { teamId } = req.params;
-    const { userId } = req.body;
+    const { id: departmentId } = req.params;
+    const { name, description, managerId } = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(teamId)) {
+    if (!mongoose.Types.ObjectId.isValid(departmentId)) {
       return res.status(400).json({
-        message: "Invalid team ID",
+        message: "Invalid department ID",
       });
     }
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
+    if (!name || !name.trim()) {
       return res.status(400).json({
-        message: "Invalid user ID",
+        message: "Team name is required",
       });
     }
 
-    const team = await Team.findById(teamId);
+    const department = await Department.findById(departmentId);
 
-    if (!team) {
+    if (!department) {
       return res.status(404).json({
-        message: "Team not found",
+        message: "Department not found",
       });
     }
 
-    // User must belong to the department first
-    const departmentMember = await DepartmentMember.findOne({
-      departmentId: team.departmentId,
-      userId,
+    const existingTeam = await Team.findOne({
+      departmentId,
+      name: name.trim(),
     });
 
-    if (!departmentMember) {
-      return res.status(400).json({
-        message: "User must be a department member before joining a team",
-      });
-    }
-
-    const existingMember = await TeamMember.findOne({
-      teamId,
-      userId,
-    });
-
-    if (existingMember) {
+    if (existingTeam) {
       return res.status(409).json({
-        message: "User is already a member of this team",
+        message: "Team with this name already exists",
       });
     }
 
-    const member = await TeamMember.create({
-      teamId,
-      userId,
+    const team = await Team.create({
+      departmentId,
+      name: name.trim(),
+      description: description?.trim() || "",
+      managerId: managerId || null,
     });
 
     await createAuditLog({
-      action: "TEAM_MEMBER_ADDED",
-      targetUser: userId,
-      departmentId: team.departmentId,
-      teamId,
+      action: "TEAM_CREATED",
+      departmentId,
+      teamId: team._id,
       performedBy: req.user.userId,
-      details: `User ${userId} added to team`,
+      details: `Team "${team.name}" created`,
     });
 
     res.status(201).json({
-      message: "Team member added successfully",
-      member,
+      message: "Team created successfully",
+      team,
     });
   } catch (error) {
-    console.error("Add team member:", error);
+    console.error("Create team:", error);
 
     res.status(500).json({
-      message: "Failed to add team member",
+      message: "Failed to create team",
     });
   }
 };
 
-// GET TEAM MEMBERS
-exports.getTeamMembers = async (req, res) => {
+// GET TEAMS
+exports.getTeams = async (req, res) => {
+  try {
+    const { id: departmentId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(departmentId)) {
+      return res.status(400).json({
+        message: "Invalid department ID",
+      });
+    }
+
+    const teams = await Team.find({
+      departmentId,
+    }).sort({ createdAt: -1 });
+
+    res.status(200).json({
+      count: teams.length,
+      teams,
+    });
+  } catch (error) {
+    console.error("Get teams:", error);
+
+    res.status(500).json({
+      message: "Failed to fetch teams",
+      error: error.message,
+    });
+  }
+};
+
+// GET ONE TEAM
+exports.getTeamById = async (req, res) => {
+  try {
+    const { teamId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(teamId)) {
+      return res.status(400).json({
+        message: "Invalid team ID",
+      });
+    }
+
+    const team = await Team.findById(teamId)
+      .populate("departmentId", "name");
+
+    if (!team) {
+      return res.status(404).json({
+        message: "Team not found",
+      });
+    }
+
+    const memberCount = await TeamMember.countDocuments({
+      teamId,
+    });
+
+    res.status(200).json({
+      team,
+      statistics: {
+        totalMembers: memberCount,
+      },
+    });
+  } catch (error) {
+    console.error("Get team:", error);
+
+    res.status(500).json({
+      message: "Failed to fetch team",
+    });
+  }
+};
+
+// UPDATE TEAM
+exports.updateTeam = async (req, res) => {
+  try {
+    const { teamId } = req.params;
+    const { name, description, managerId } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(teamId)) {
+      return res.status(400).json({
+        message: "Invalid team ID",
+      });
+    }
+
+    const team = await Team.findById(teamId);
+
+    if (!team) {
+      return res.status(404).json({
+        message: "Team not found",
+      });
+    }
+
+    if (name !== undefined) {
+      if (!name.trim()) {
+        return res.status(400).json({
+          message: "Team name cannot be empty",
+        });
+      }
+
+      const duplicate = await Team.findOne({
+        departmentId: team.departmentId,
+        name: name.trim(),
+        _id: { $ne: teamId },
+      });
+
+      if (duplicate) {
+        return res.status(409).json({
+          message: "Another team already has this name",
+        });
+      }
+
+      team.name = name.trim();
+    }
+
+    if (description !== undefined) {
+      team.description = description.trim();
+    }
+
+    if (managerId !== undefined) {
+      team.managerId = managerId || null;
+    }
+
+    await team.save();
+
+    await createAuditLog({
+      action: "TEAM_UPDATED",
+      departmentId: team.departmentId,
+      performedBy: req.user.userId,
+      teamId: team._id,
+      details: `Team "${team.name}" updated`,
+    });
+
+    res.status(200).json({
+      message: "Team updated successfully",
+      team,
+    });
+  } catch (error) {
+    console.error("Update team:", error);
+
+    res.status(500).json({
+      message: "Failed to update team",
+    });
+  }
+};
+
+// DELETE TEAM
+exports.deleteTeam = async (req, res) => {
   try {
     const { teamId } = req.params;
 
@@ -101,78 +231,28 @@ exports.getTeamMembers = async (req, res) => {
       });
     }
 
-    const members = await TeamMember.find({
+    await TeamMember.deleteMany({
       teamId,
-    })
-      .populate("userId", "name email")
-      .sort({ joinedAt: -1 });
-
-    res.status(200).json({
-      count: members.length,
-      members,
-    });
-  } catch (error) {
-    console.error("Get team members:", error);
-
-    res.status(500).json({
-      message: "Failed to fetch team members",
-    });
-  }
-};
-
-// REMOVE TEAM MEMBER
-exports.removeTeamMember = async (req, res) => {
-  try {
-    const { teamId, userId } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(teamId)) {
-      return res.status(400).json({
-        message: "Invalid team ID",
-      });
-    }
-
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({
-        message: "Invalid user ID",
-      });
-    }
-
-    const team = await Team.findById(teamId);
-
-    if (!team) {
-      return res.status(404).json({
-        message: "Team not found",
-      });
-    }
-
-    const member = await TeamMember.findOneAndDelete({
-      teamId,
-      userId,
     });
 
-    if (!member) {
-      return res.status(404).json({
-        message: "Team member not found",
-      });
-    }
+    await Team.findByIdAndDelete(teamId);
 
     await createAuditLog({
-      action: "TEAM_MEMBER_REMOVED",
-      targetUser: userId,
+      action: "TEAM_DELETED",
       departmentId: team.departmentId,
       performedBy: req.user.userId,
       teamId,
-      details: `User ${userId} removed from team`,
+      details: `Team "${team.name}" deleted`,
     });
 
     res.status(200).json({
-      message: "Team member removed successfully",
+      message: "Team and its members deleted successfully",
     });
   } catch (error) {
-    console.error("Remove team member:", error);
+    console.error("Delete team:", error);
 
     res.status(500).json({
-      message: "Failed to remove team member",
+      message: "Failed to delete team",
     });
   }
 };

@@ -1,63 +1,80 @@
 const express = require("express");
-
 const router = express.Router({ mergeParams: true });
 
 const {
-  addTeamMember,
-  getTeamMembers,
-  removeTeamMember,
-} = require("../controllers/teamMemberController");
+  createTeam,
+  getTeams,
+  getTeamById,
+  updateTeam,
+  deleteTeam,
+} = require("../controllers/teamController");
 
 const validate = require("../middleware/validate");
+const { sensitiveLimiter } = require("../middleware/rateLimiter");
 
-const {
-  objectId,
-} = require("../middleware/validators")
+const { objectId, teamValidation } = require("../middleware/validators");
 
-// 👇 NAYE IMPORTS
+// 👇 Authentication & Authorization
 const authenticate = require("../middleware/authenticate");
+const checkRole = require("../middleware/checkRole");
 const checkDepartmentAccess = require("../middleware/checkDepartmentAccess");
-const checkTeamManager = require("../middleware/checkTeamManager");
 
-// HR ya is team ka manager hi allowed - custom check
-function hrOrTeamManager(req, res, next) {
-  if (req.membership && req.membership.role === "hr") {
-    return next();
-  }
-  return checkTeamManager(req, res, next);
-}
-
+// CREATE TEAM
 router.post(
   "/",
   authenticate,
   objectId("id"),
-  objectId("teamId"),
   checkDepartmentAccess,
-  hrOrTeamManager,
+  checkRole("hr"),
+  teamValidation,
   validate,
-  addTeamMember
+  createTeam
 );
 
+// GET ALL TEAMS
 router.get(
   "/",
   authenticate,
   objectId("id"),
-  objectId("teamId"),
   checkDepartmentAccess,
   validate,
-  getTeamMembers
+  getTeams
 );
 
-router.delete(
-  "/:userId",
+// GET TEAM BY ID
+router.get(
+  "/:teamId",
   authenticate,
   objectId("id"),
   objectId("teamId"),
-  objectId("userId"),
   checkDepartmentAccess,
-  hrOrTeamManager,
   validate,
-  removeTeamMember
+  getTeamById
+);
+
+// UPDATE TEAM
+router.put(
+  "/:teamId",
+  authenticate,
+  objectId("id"),
+  objectId("teamId"),
+  checkDepartmentAccess,
+  checkRole("hr"),
+  validate,
+  updateTeam
+);
+
+// DELETE TEAM
+router.delete(
+  "/:teamId",
+  authenticate,
+  objectId("id"),
+  objectId("teamId"),
+  checkDepartmentAccess,
+  checkRole("hr"),
+  sensitiveLimiter,
+  validate,
+  deleteTeam
 );
 
 module.exports = router;

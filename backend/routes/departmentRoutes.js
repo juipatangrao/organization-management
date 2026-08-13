@@ -1,31 +1,38 @@
 const express = require("express");
 
+
 const router = express.Router();
 
+
 const {
-  createDepartment,
-  getDepartments,
-  getDepartmentById,
-  updateDepartment,
-  deleteDepartment,
+  createDepartment,
+  getDepartments,
+  getDepartmentById,
+  updateDepartment,
+  deleteDepartment,
 } = require("../controllers/departmentController");
+
 
 const validate = require("../middleware/validate");
 const { sensitiveLimiter } = require("../middleware/rateLimiter");
 
+
 const {
-  objectId,
-  departmentValidation,
+  objectId,
+  departmentValidation,
 } = require("../middleware/validators");
+
 
 // Authentication / Authorization
 const authenticate = require("../middleware/authenticate");
 const checkRole = require("../middleware/checkRole");
 const checkDepartmentAccess = require("../middleware/checkDepartmentAccess");
 
+
 const {
-  getDepartmentAuditLogs,
+  getDepartmentAuditLogs,
 } = require("../controllers/auditLogController");
+
 
 
 // =====================================================
@@ -33,19 +40,23 @@ const {
 // Login नसल्यामुळे development साठी authenticate काढले आहे
 // =====================================================
 
+
 router.get("/", getDepartments);
+
 
 
 // =====================================================
 // GET SINGLE DEPARTMENT
 // =====================================================
 
+
 router.get(
-  "/:id",
-  objectId("id"),
-  validate,
-  getDepartmentById
+  "/:id",
+  objectId("id"),
+  validate,
+  getDepartmentById
 );
+
 
 
 // =====================================================
@@ -53,14 +64,16 @@ router.get(
 // Authentication + HR role required
 // =====================================================
 
+
 router.post(
-  "/",
-  authenticate,
-  checkRole("hr"),
-  departmentValidation,
-  validate,
-  createDepartment
+  "/",
+  authenticate,
+  checkRole("hr"),
+  departmentValidation,
+  validate,
+  createDepartment
 );
+
 
 
 // =====================================================
@@ -68,14 +81,16 @@ router.post(
 // Authentication + HR role required
 // =====================================================
 
+
 router.put(
-  "/:id",
-  authenticate,
-  checkRole("hr"),
-  objectId("id"),
-  validate,
-  updateDepartment
+  "/:id",
+  authenticate,
+  checkRole("hr"),
+  objectId("id"),
+  validate,
+  updateDepartment
 );
+
 
 
 // =====================================================
@@ -83,15 +98,17 @@ router.put(
 // Authentication + HR role required
 // =====================================================
 
+
 router.delete(
-  "/:id",
-  authenticate,
-  checkRole("hr"),
-  sensitiveLimiter,
-  objectId("id"),
-  validate,
-  deleteDepartment
+  "/:id",
+  authenticate,
+  checkRole("hr"),
+  sensitiveLimiter,
+  objectId("id"),
+  validate,
+  deleteDepartment
 );
+
 
 
 // =====================================================
@@ -99,14 +116,16 @@ router.delete(
 // Authentication required
 // =====================================================
 
+
 router.get(
-  "/:id/audit-logs",
-  authenticate,
-  objectId("id"),
-  checkDepartmentAccess,
-  validate,
-  getDepartmentAuditLogs
+  "/:id/audit-logs",
+  authenticate,
+  objectId("id"),
+  checkDepartmentAccess,
+  validate,
+  getDepartmentAuditLogs
 );
+
 
 
 module.exports = router;

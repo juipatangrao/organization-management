@@ -69,7 +69,6 @@ await createAuditLog({
   }
 };
 
-// GET MEMBERS
 exports.getMembers = async (req, res) => {
   try {
     const { id: departmentId } = req.params;
@@ -90,9 +89,7 @@ exports.getMembers = async (req, res) => {
 
     const members = await DepartmentMember.find({
       departmentId,
-    })
-      .populate("userId", "name email")
-      .sort({ joinedAt: -1 });
+    }).sort({ joinedAt: -1 });
 
     res.status(200).json({
       count: members.length,
@@ -106,7 +103,6 @@ exports.getMembers = async (req, res) => {
     });
   }
 };
-
 // UPDATE MEMBER
 exports.updateMember = async (req, res) => {
   try {

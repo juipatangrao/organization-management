@@ -71,7 +71,6 @@ exports.createTeam = async (req, res) => {
   }
 };
 
-// GET TEAMS
 exports.getTeams = async (req, res) => {
   try {
     const { id: departmentId } = req.params;
@@ -84,9 +83,7 @@ exports.getTeams = async (req, res) => {
 
     const teams = await Team.find({
       departmentId,
-    })
-      .populate("managerId", "name email")
-      .sort({ createdAt: -1 });
+    }).sort({ createdAt: -1 });
 
     res.status(200).json({
       count: teams.length,
@@ -97,6 +94,7 @@ exports.getTeams = async (req, res) => {
 
     res.status(500).json({
       message: "Failed to fetch teams",
+      error: error.message,
     });
   }
 };
@@ -113,7 +111,6 @@ exports.getTeamById = async (req, res) => {
     }
 
     const team = await Team.findById(teamId)
-      .populate("managerId", "name email")
       .populate("departmentId", "name");
 
     if (!team) {
@@ -140,7 +137,6 @@ exports.getTeamById = async (req, res) => {
     });
   }
 };
-
 // UPDATE TEAM
 exports.updateTeam = async (req, res) => {
   try {

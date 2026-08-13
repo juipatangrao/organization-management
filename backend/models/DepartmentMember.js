@@ -11,7 +11,6 @@ const departmentMemberSchema = new mongoose.Schema(
 
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
       required: true,
       index: true,
     },
@@ -26,6 +25,7 @@ const departmentMemberSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+
     status: {
       type: String,
       enum: ["Active", "Inactive", "On Leave"],
@@ -34,10 +34,15 @@ const departmentMemberSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-// Same user cannot be added twice to same department
-departmentMemberSchema.index({ departmentId: 1, userId: 1 }, { unique: true });
+departmentMemberSchema.index(
+  { departmentId: 1, userId: 1 },
+  { unique: true }
+);
 
-module.exports = mongoose.model("DepartmentMember", departmentMemberSchema);
+module.exports = mongoose.model(
+  "DepartmentMember",
+  departmentMemberSchema
+);

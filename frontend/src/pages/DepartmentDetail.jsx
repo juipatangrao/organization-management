@@ -10,6 +10,8 @@ import {
   DollarSign,
   FileText,
   X,
+  Activity,
+  UserRound,
 } from "lucide-react";
 
 import "../styles/department-detail.css";
@@ -954,66 +956,175 @@ function DepartmentDetail({ departmentId, onBack }) {
       )}
 
       {/* ================================================= */}
-      {/* AUDIT LOG */}
-      {/* ================================================= */}
+{/* AUDIT LOG */}
+{/* ================================================= */}
 
-      {activeTab === "Activity Audit Log" && (
-        <div
-          className="dept-tab-placeholder"
-          style={{ textAlign: "left" }}
-        >
+{activeTab === "Activity Audit Log" && (
+  <div className="audit-log-page">
 
-          {tabLoading && (
-            <p>Loading activity…</p>
-          )}
+    <div className="audit-log-card">
 
-          {!tabLoading &&
-            auditLogs?.length === 0 && (
-              <p
-                style={{
-                  color: "#9c8d82",
-                }}
-              >
-                No activity recorded yet.
-              </p>
-            )}
+      {/* HEADER */}
+      <div className="audit-log-header">
+        <div>
+          <div className="audit-log-title-row">
+            <Activity size={18} />
+            <h2>Audit & Activity Timeline</h2>
+          </div>
 
-          {!tabLoading &&
-            auditLogs?.map((log) => (
+          <p>
+            Historical trail of changes, personnel moves, and updates
+          </p>
+        </div>
+
+        <span className="audit-event-count">
+          {auditLogs?.length || 0} Events
+        </span>
+      </div>
+
+      {/* LOADING */}
+      {tabLoading && (
+        <div className="audit-loading">
+          Loading activity…
+        </div>
+      )}
+
+      {/* EMPTY */}
+      {!tabLoading && auditLogs?.length === 0 && (
+        <div className="audit-empty">
+          <Activity size={24} />
+          <strong>No activity recorded yet.</strong>
+          <span>
+            Department changes and team activity will appear here.
+          </span>
+        </div>
+      )}
+
+      {/* TIMELINE */}
+      {!tabLoading && auditLogs?.length > 0 && (
+        <div className="audit-timeline">
+
+          {auditLogs.map((log) => {
+
+            const action = String(
+              log.action || "ACTIVITY"
+            );
+
+            const actionUpper = action
+              .replace(/_/g, " ")
+              .toUpperCase();
+
+            const actionType = action
+              .toLowerCase()
+              .replace(/_/g, " ");
+
+            const performer =
+              log.performedBy?.name ||
+              log.performedBy?.email ||
+              log.performedByName ||
+              "System";
+
+            const performerRole =
+              log.performedBy?.role ||
+              log.performedByRole ||
+              "System Activity";
+
+            const description =
+              log.details ||
+              log.description ||
+              `${actionType} was performed in ${department.name}.`;
+
+            const date = log.createdAt
+              ? new Date(log.createdAt).toLocaleString("en-US", {
+                  month: "numeric",
+                  day: "numeric",
+                  year: "numeric",
+                  hour: "numeric",
+                  minute: "2-digit",
+                })
+              : "—";
+
+            const initials = performer
+              .split(" ")
+              .filter(Boolean)
+              .slice(0, 2)
+              .map((part) => part[0])
+              .join("")
+              .toUpperCase();
+
+            return (
               <div
+                className="audit-timeline-item"
                 key={log._id}
-                style={{
-                  padding: "12px 0",
-                  borderBottom:
-                    "1px solid #eee7e2",
-                }}
               >
 
-                <strong
-                  style={{
-                    fontSize: "12px",
-                  }}
-                >
-                  {log.action}
-                </strong>
+                {/* TIMELINE DOT */}
+                <div className="audit-timeline-dot" />
 
-                <div
-                  style={{
-                    fontSize: "10px",
-                    color: "#9c8d82",
-                  }}
-                >
-                  {log.details} ·{" "}
-                  {new Date(
-                    log.createdAt
-                  ).toLocaleString()}
+                {/* EVENT CARD */}
+                <div className="audit-event-card">
+
+                  <div className="audit-event-top">
+
+                    <div className="audit-event-heading">
+
+                      <span className="audit-event-badge">
+                        {actionUpper}
+                      </span>
+
+                      <h3>
+                        {log.title ||
+                          log.eventTitle ||
+                          actionUpper
+                            .toLowerCase()
+                            .replace(/\b\w/g, (letter) =>
+                              letter.toUpperCase()
+                            )}
+                      </h3>
+
+                    </div>
+
+                    <span className="audit-event-date">
+                      {date}
+                    </span>
+
+                  </div>
+
+                  <p className="audit-event-description">
+                    {description}
+                  </p>
+
+                  <div className="audit-event-divider" />
+
+                  <div className="audit-performer">
+
+                    <div className="audit-avatar">
+                      {initials || <UserRound size={14} />}
+                    </div>
+
+                    <span className="audit-performed-by">
+                      Performed by:
+                    </span>
+
+                    <strong>{performer}</strong>
+
+                    <span className="audit-performer-role">
+                      ({performerRole})
+                    </span>
+
+                  </div>
+
                 </div>
-
               </div>
-            ))}
+            );
+          })}
 
         </div>
       )}
+
+    </div>
+  </div>
+)}
 
       {/* ================================================= */}
       {/* CREATE / EDIT TEAM MODAL */}
