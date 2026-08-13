@@ -18,6 +18,27 @@ const departmentValidation = [
     .trim()
     .isLength({ max: 500 })
     .withMessage("Description cannot exceed 500 characters"),
+
+  body("code")
+    .optional()
+    .trim()
+    .isLength({ max: 10 })
+    .withMessage("Department code cannot exceed 10 characters"),
+
+  body("managerTitle")
+    .optional()
+    .trim()
+    .isLength({ max: 100 })
+    .withMessage("Manager title cannot exceed 100 characters"),
+
+  body("budget")
+    .optional()
+    .isNumeric()
+    .withMessage("Budget must be a number"),
+
+  body("themeColor")
+    .optional()
+    .trim(),
 ];
 
 const teamValidation = [

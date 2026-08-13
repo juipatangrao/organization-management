@@ -21,7 +21,16 @@ exports.getOrganization = async (req, res) => {
 // UPDATE company info (HR only, enforced in the route)
 exports.updateOrganization = async (req, res) => {
   try {
-    const { name, tagline, description, website, locations, foundedYear } = req.body;
+    const {
+      name,
+      tagline,
+      description,
+      website,
+      locations,
+      foundedYear,
+      industry,
+      logoUrl,
+    } = req.body;
 
     let organization = await Organization.findOne();
 
@@ -31,10 +40,13 @@ exports.updateOrganization = async (req, res) => {
 
     if (name !== undefined) organization.name = name.trim();
     if (tagline !== undefined) organization.tagline = tagline.trim();
-    if (description !== undefined) organization.description = description.trim();
+    if (description !== undefined)
+      organization.description = description.trim();
     if (website !== undefined) organization.website = website.trim();
     if (locations !== undefined) organization.locations = locations;
     if (foundedYear !== undefined) organization.foundedYear = foundedYear;
+    if (industry !== undefined) organization.industry = industry.trim();
+    if (logoUrl !== undefined) organization.logoUrl = logoUrl.trim();
 
     await organization.save();
 

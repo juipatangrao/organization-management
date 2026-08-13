@@ -35,6 +35,18 @@ const organizationSchema = new mongoose.Schema(
       type: Number,
       default: null,
     },
+    industry: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    logoUrl: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    
   },
   {
     timestamps: true,

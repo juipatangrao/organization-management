@@ -6,9 +6,10 @@
   "author": "Jui patangrao",
   "type": "commonjs",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+"scripts": {
+  "start": "node server.js",
+  "dev": "nodemon server.js"
+},
   "dependencies": {
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",

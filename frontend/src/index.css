@@ -1,0 +1,39 @@
+:root {
+  --bg-sidebar: #1C120C;
+  --bg-sidebar-hover: #2A1B12;
+  --bg-sidebar-active: #B5651D;
+  --primary-brown: #6B4A36;
+  --text-light: #F5EDE6;
+  --accent-tan: #C9A987;
+  --text-muted: #8C7A6E;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  background: #faf9f7;
+}
+
+* {
+  box-sizing: border-box;
+}
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background: #FAF9F7;
+}
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+  min-height: 100vh;
+}
